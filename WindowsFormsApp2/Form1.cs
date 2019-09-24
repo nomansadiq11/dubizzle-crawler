@@ -28,10 +28,75 @@ namespace WindowsFormsApp2
 
         private void button1_Click(object sender, EventArgs e)
         {
-            start();
+            ZameenStart(); 
         }
 
-        private static async Task start()
+
+        private static async Task ZameenStart()
+        {
+
+            SqlConnection connection = new SqlConnection(System.Configuration.ConfigurationSettings.AppSettings["conn"].ToString());
+            SqlCommand cmd;
+            int tot = 0;
+
+
+
+            for (int i = 1; i < 11; i++)
+            {
+
+
+
+                var url = "https://www.zameen.com/Rentals_Houses_Property/Lahore-1-" + i + ".html?price_min=25000&price_max=30000&area_min=167.22547200000002&area_max=209.03184000000002";
+                var httpClient = new HttpClient();
+                var html = await httpClient.GetStringAsync(url);
+                var htmlDocument = new HtmlAgilityPack.HtmlDocument();
+                htmlDocument.LoadHtml(html);
+
+                List<Houses> houses = new List<Houses>();
+
+
+                var divs = htmlDocument.DocumentNode.Descendants("li").Where(node => node.GetAttributeValue("class", "").Equals("ef447dde")).ToList();
+
+                string Title = "";
+                string Price = "";
+                string Location = "";
+
+                foreach (var ad in divs)
+                {
+
+                    var home = new Houses();
+                    //Title = ad.Descendants("dive").FirstOrDefault().InnerText;
+                    Title = ad.Descendants("h2").FirstOrDefault().InnerText;
+                    Price = ad.Descendants("div").Where(a => a.GetAttributeValue("class", "").Equals("_7ac32433")).FirstOrDefault().InnerText;
+                    Location = ad.Descendants("div").Where(a => a.GetAttributeValue("class", "").Equals("_162e6469")).FirstOrDefault().InnerText;
+
+                    //var vlLocation = ad.Descendants("div").Where(a => a.GetAttributeValue("class", "").Equals("place")).ToList();
+
+
+
+
+                    string sql = "insert into data (Title, Price, Location) values ('" + Title + "', '" + Price + "', '" + Location + "')";
+                    cmd = new SqlCommand(sql, connection);
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+
+                    //string val = ad.Descendants("script").FirstOrDefault().InnerText; 
+                }
+
+
+                tot = i;
+
+
+            }
+
+
+            MessageBox.Show("total pages parsed " + tot);
+
+
+        }
+
+        private static async Task Dubbizlestart()
         {
 
             SqlConnection connection = new SqlConnection(System.Configuration.ConfigurationSettings.AppSettings["conn"].ToString());
