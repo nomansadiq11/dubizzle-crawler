@@ -45,10 +45,10 @@ namespace WindowsFormsApp2
             for (int i = 1; i < 11; i++)
             {
 
-              
 
 
-                var url = "https://www.zameen.com/Rentals_Houses_Property/Lahore-1-" + i + ".html?price_min=25000&price_max=35000&area_min=167.22547200000002&area_max=209.03184000000002";
+
+                var url = "https://www.zameen.com/Rentals/Lahore-1-" + i + ".html?price_min=30000&price_max=40000";
                 var httpClient = new HttpClient();
                 var html = await httpClient.GetStringAsync(url);
                 var htmlDocument = new HtmlAgilityPack.HtmlDocument();
@@ -62,8 +62,8 @@ namespace WindowsFormsApp2
                 string Title = "";
                 string Price = "";
                 string Location = "";
-                
-                string hrefValue = ""; 
+
+                string hrefValue = "";
 
                 foreach (var ad in divs)
                 {
@@ -85,7 +85,7 @@ namespace WindowsFormsApp2
 
 
 
-                    string sql = "insert into data (Title, Price, Location, link) values ('" + Title + "', '" + Price + "', '" + Location + "', '"+ "https://www.zameen.com" + hrefValue +"')";
+                    string sql = "insert into data (Title, Price, Location, link) values ('" + Title + "', '" + Price + "', '" + Location + "', '" + "https://www.zameen.com" + hrefValue + "')";
                     cmd = new SqlCommand(sql, connection);
                     connection.Open();
                     cmd.ExecuteNonQuery();
